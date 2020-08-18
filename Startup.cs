@@ -15,6 +15,7 @@ namespace StudentLabManager
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            // Test uploading By Vincent
         }
 
         public IConfiguration Configuration { get; }

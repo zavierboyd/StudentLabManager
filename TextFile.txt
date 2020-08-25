@@ -1,2 +1,6 @@
 ﻿This is a test so test
 some stuff
+
+system.directory services (to talk to active directory)
+
+LDAP???

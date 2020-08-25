@@ -1,0 +1,32 @@
+﻿
+@{
+    ViewData["Title"] = "Login";
+}
+
+<h1>Login</h1>
+@ViewBag.Id
+@ViewBag.Name
+
+
+
+
+
+<form action="/Login/form1" method="post">
+    <div>
+        <div>
+            <h3>Username: </h3>
+            <p><input type="text" name="txtuser" /></p>
+        </div>
+        <div>
+            <h3>Password: </h3>
+            <p><input type="password" name="pwpw" /></p>
+        </div>
+
+        <div>
+            <p><input type="submit" value="Login" /></p>
+        </div>
+    </div>
+</form>
+
+
+

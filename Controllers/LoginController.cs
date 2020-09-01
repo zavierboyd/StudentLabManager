@@ -21,9 +21,18 @@ namespace StudentLabManager.Controllers
             Console.WriteLine(txtuser);
            
 
-            return View("Index");
+            return View("Confirmation");
+            
         }
 
+
+        public IActionResult Confirmation()
+        {
+           
+
+
+            return View();
+        }
     }
 
 

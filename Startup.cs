@@ -34,9 +34,7 @@ namespace StudentLabManager
             services.AddDbContext<TestScheduleData>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
-            services.AddControllersWithViews()
-                .AddMicrosoftIdentityUI();
-            services.AddControllersWithViews().AddMicrosoftIdentityUI();
+          
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

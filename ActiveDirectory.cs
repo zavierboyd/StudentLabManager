@@ -25,6 +25,17 @@ namespace StudentLabManager
 
         }
 
+        public ActiveDirectory(string UserName)
+        {
+            this.username = UserName;
+            PrincipalContext ser = new PrincipalContext(ContextType.Domain, "uict.nz", "DC=uict,DC=nz");
+            this.context = ser;
+            this.user_Info = Principal.FindByIdentity(ser, UserName);
+            this.displayName = this.user_Info.DisplayName;
+
+
+        }
+
         public Array GetGroup(string UserName)
         {
             Array a = this.user_Info.GetGroups().ToArray();

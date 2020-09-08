@@ -54,13 +54,21 @@ namespace StudentLabManager.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Group,TestTime,location,MaxNoStudents,DueDate")] TestSchedule testSchedule)
+        public async Task<IActionResult> Create([Bind("Group,TestTime,location,MaxNoStudents,DueDate")] TestSchedule testSchedule)
         {
-            if (ModelState.IsValid)
+
+            try
             {
-                _context.Add(testSchedule);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    _context.Add(testSchedule);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Unable to save changes. " + "try again");
             }
             return View(testSchedule);
         }

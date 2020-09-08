@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
+using StudentLabManager.Data;
 
 namespace StudentLabManager
 {
@@ -25,10 +27,11 @@ namespace StudentLabManager
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews()
-                .AddMicrosoftIdentityUI();
-            services.AddControllersWithViews().AddMicrosoftIdentityUI();
-            services.AddMicrosoftIdentityWebAppAuthentication(Configuration, "AzureAd");
+            services.AddControllersWithViews();
+            /*services.AddControllersWithViews().AddMicrosoftIdentityUI();
+            services.AddMicrosoftIdentityWebAppAuthentication(Configuration, "AzureAd");*/
+            services.AddDbContext<TestScheduleData>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,7 +49,7 @@ namespace StudentLabManager
 
             app.UseRouting();
 
-            app.UseAuthentication();
+            /*app.UseAuthentication();*/
 
             app.UseAuthorization();
 

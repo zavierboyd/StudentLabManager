@@ -5,10 +5,6 @@
 
 <h1>Login</h1>
 
-@ViewBag.Name
-
-
-
 
 
 <form action="/Login/form1" method="post">
@@ -21,7 +17,12 @@
             <h3>Password: </h3>
             <p><input type="password" name="pwpw" /></p>
         </div>
-
+        @if (ViewBag.LoginError != null)
+        {
+            <div>
+                <p>Username or Password is not correct! Please try again!</p>
+            </div>
+        }
         <div>
             <p><input type="submit" value="Login" /></p>
         </div>

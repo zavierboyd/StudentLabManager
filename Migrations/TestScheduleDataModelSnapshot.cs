@@ -38,6 +38,9 @@ namespace StudentLabManager.Migrations
                     b.Property<DateTime>("TestTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("location")
                         .HasColumnType("nvarchar(max)");
 

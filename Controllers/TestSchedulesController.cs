@@ -54,7 +54,7 @@ namespace StudentLabManager.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Group,TestTime,location,MaxNoStudents,DueDate")] TestSchedule testSchedule)
+        public async Task<IActionResult> Create([Bind("Title,Group,TestTime,location,MaxNoStudents,DueDate")] TestSchedule testSchedule)
         {
 
             try

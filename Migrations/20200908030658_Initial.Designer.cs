@@ -10,7 +10,7 @@ using StudentLabManager.Data;
 namespace StudentLabManager.Migrations
 {
     [DbContext(typeof(TestScheduleData))]
-    [Migration("20200908021123_Initial")]
+    [Migration("20200908030658_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,6 +39,9 @@ namespace StudentLabManager.Migrations
 
                     b.Property<DateTime>("TestTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("location")
                         .HasColumnType("nvarchar(max)");

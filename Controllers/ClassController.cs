@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace StudentLabManager.Controllers
 {
@@ -16,14 +12,30 @@ namespace StudentLabManager.Controllers
             {
                 string UserName = HttpContext.User.Claims.Where(user => user.Type == "UserName").First().Value;
                 ActiveDirectory User = new ActiveDirectory(UserName);
-                string[] ClassGroup; 
-                Array a = User.GetGroup(UserName);
-                foreach (object s in a)
-                {
-
-                    ClassGroup = new string[] { s.ToString() };
-                };
+                string[] ClassGroup = User.GetGroup(UserName);
+                ViewBag.ClassList = ClassGroup;
+                return View();
+            } else
+            {
+                return View("_InvalidationPage");
             }
+        }
+        [HttpPost]
+        public ActionResult AddTestSchedule(string ClassName)
+        {
+            return Redirect("ClassDetails/?class=" + ClassName + "&testmanagement=true");
+        }
+        [HttpPost]
+        public ActionResult ClassChoose(string ClassName)
+        {
+            return Redirect("ClassDetails/?class=" + ClassName);
+        }
+        public IActionResult ClassDetails()
+        {
+            string url = HttpContext.Request.Query["class"];
+            string testmanagement = HttpContext.Request.Query["testmanagement"];
+            ViewBag.URL = url;
+            ViewBag.Test = testmanagement;
             return View();
         }
     }

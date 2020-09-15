@@ -26,9 +26,9 @@ namespace StudentLabManager.Controllers
             Boolean isValidUser = ser.ValidateCredentials(txtuser, pwpw);
             if (isValidUser) {
                 ActiveDirectory User = new ActiveDirectory(txtuser,pwpw, ser);
-                ViewBag.Id = User.displayName; 
-
-                var claims = new[] { new Claim("UserName", txtuser) };
+                ViewBag.Id = User.displayName;
+                var claims = new[] { new Claim("UserName", txtuser), new Claim("Role", User.role) };
+                ViewBag.Role = User.role;
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
                 ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);

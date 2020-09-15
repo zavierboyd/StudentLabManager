@@ -6,17 +6,17 @@ namespace StudentLabManager.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "Title",
-                table: "Schedule",
-                nullable: true);
+           // migrationBuilder.AddColumn<string>(
+           //     name: "Title",
+           //     table: "Schedule",
+           //     nullable: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "Title",
-                table: "Schedule");
+            //migrationBuilder.DropColumn(
+             //   name: "Title",
+              //  table: "Schedule");
         }
     }
 }

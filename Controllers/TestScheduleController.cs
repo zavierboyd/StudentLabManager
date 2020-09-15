@@ -10,22 +10,22 @@ using StudentLabManager.Models;
 
 namespace StudentLabManager.Controllers
 {
-    public class TestSchedulesController : Controller
+    public class TestScheduleController : Controller
     {
         private readonly TestScheduleData _context;
 
-        public TestSchedulesController(TestScheduleData context)
+        public TestScheduleController(TestScheduleData context)
         {
             _context = context;
         }
 
-        // GET: TestSchedules
+        // GET: TestSchedule
         public async Task<IActionResult> Index()
         {
             return View(await _context.Schedule.ToListAsync());
         }
 
-        // GET: TestSchedules/Details/5
+        // GET: TestSchedule/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -43,37 +43,30 @@ namespace StudentLabManager.Controllers
             return View(testSchedule);
         }
 
-        // GET: TestSchedules/Create
+        // GET: TestSchedule/Create
         public IActionResult Create()
         {
+            ViewBag.classlist = string.Join(", ", new string[] {"class1", "class2"});
             return View();
         }
 
-        // POST: TestSchedules/Create
+        // POST: TestSchedule/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,Group,TestTime,location,MaxNoStudents,DueDate")] TestSchedule testSchedule)
+        public async Task<IActionResult> Create([Bind("exam,group,duration,schedule")] TestSchedule testSchedule)
         {
-
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
-                {
-                    _context.Add(testSchedule);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
-            }
-            catch (DbUpdateException)
-            {
-                ModelState.AddModelError("", "Unable to save changes. " + "try again");
+                _context.Add(testSchedule);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
             return View(testSchedule);
         }
 
-        // GET: TestSchedules/Edit/5
+        // GET: TestSchedule/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -89,12 +82,12 @@ namespace StudentLabManager.Controllers
             return View(testSchedule);
         }
 
-        // POST: TestSchedules/Edit/5
+        // POST: TestSchedule/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Group,TestTime,location,MaxNoStudents,DueDate")] TestSchedule testSchedule)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,exam,group,duration,schedule")] TestSchedule testSchedule)
         {
             if (id != testSchedule.ID)
             {
@@ -124,7 +117,7 @@ namespace StudentLabManager.Controllers
             return View(testSchedule);
         }
 
-        // GET: TestSchedules/Delete/5
+        // GET: TestSchedule/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -142,7 +135,7 @@ namespace StudentLabManager.Controllers
             return View(testSchedule);
         }
 
-        // POST: TestSchedules/Delete/5
+        // POST: TestSchedule/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

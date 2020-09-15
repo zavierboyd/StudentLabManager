@@ -2,15 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StudentLabManager.Data;
 
 namespace StudentLabManager.Migrations
 {
     [DbContext(typeof(TestScheduleData))]
-    partial class TestScheduleDataModelSnapshot : ModelSnapshot
+    [Migration("20200915031514_TestJSON")]
+    partial class TestJSON
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

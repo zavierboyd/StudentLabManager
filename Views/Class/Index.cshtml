@@ -1,0 +1,43 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<h3 class="text-center">Class List</h3>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Class Name</th>
+            @if (User.Claims.Where(user => user.Type == "Role").First().Value == "Staff")
+            {
+                <th class="text-right">Test Management</th>
+            }
+            <th class="text-right">Operation</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (string classname in ViewBag.ClassList)
+        {
+        <tr class="table-hover">
+            <td>@classname</td>
+            @if (User.Claims.Where(user => user.Type == "Role").First().Value == "Staff")
+            {
+                <td class="text-right flex-column">
+                    <form action="Class/AddTestSchedule" method="POST">
+                        <button class="btn btn-info" type="submit" name="ClassName" value=@classname>Enter</button>
+                    </form>
+
+                </td>
+            }
+            <td class="text-right flex-column">
+                <form action="Class/ClassChoose" method="POST">
+                    <button class="btn btn-info" type="submit" name="ClassName" value=@classname>View</button>
+                </form>
+
+            </td>
+        </tr>
+        }
+    </tbody>
+
+
+</table>

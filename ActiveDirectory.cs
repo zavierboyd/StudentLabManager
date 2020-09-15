@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace StudentLabManager
 {
@@ -14,6 +13,7 @@ namespace StudentLabManager
         public PrincipalContext context { get; set; }
         public string displayName { get; set; }
         public Principal user_Info { get; set; }
+        public string role { get; set; }
         public ActiveDirectory(string UserName,string UserPassword, PrincipalContext ser)
         {
             this.username = UserName;
@@ -21,6 +21,7 @@ namespace StudentLabManager
             this.context = ser;
             this.user_Info = Principal.FindByIdentity(ser, UserName);
             this.displayName = this.user_Info.DisplayName;
+            this.role = this.getRole();
             
 
         }
@@ -32,14 +33,35 @@ namespace StudentLabManager
             this.context = ser;
             this.user_Info = Principal.FindByIdentity(ser, UserName);
             this.displayName = this.user_Info.DisplayName;
-
+            this.role = this.getRole();
 
         }
 
-        public Array GetGroup(string UserName)
+        public string[] GetGroup(string UserName)
         {
-            Array a = this.user_Info.GetGroups().ToArray();
-            return a;
+            Array ClassList = this.user_Info.GetGroups().ToArray();
+            int ClassCount = 0;
+            string[] ClassGroup = new string[ClassCount];
+            foreach (object ClassName in ClassList)
+            {
+                if (ClassName.ToString().Length == 4)
+                {
+                    Array.Resize(ref ClassGroup, ClassGroup.Length + 1);
+                    ClassGroup[ClassCount] = ClassName.ToString();
+                    ClassCount++;
+                }
+            };
+            return ClassGroup;
+        }
+
+        public string getRole()
+        {
+            string role = this.user_Info.GetGroups().ToArray()[1].ToString();
+            if (role != "Student")
+            {
+                role = "Staff";
+            }
+            return role;
         }
     }
 }

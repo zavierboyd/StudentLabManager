@@ -6,17 +6,19 @@
             "exam": {
                 "required": true,
                 "title": "Exam",
+                "pattern": ".{1,}",
                 "type": "string"
             },
             "group": {
                 "required": true,
                 "title": "Class",
                 "type": "string",
-                "enum": ["Class1", "Class2", "..."]
+                "enum": ["Default1", "Default2", "ShouldNotBeHere"]
             },
             "duration": {
                 "required": true,
                 "title": "Duration in minutes",
+                "minimum": 1,
                 "type": "integer",
                 "format": "number"
             },
@@ -25,6 +27,7 @@
                 "title": "Schedule",
                 "type": "array",
                 "format": "tabs",
+                "minItems": 1,
                 "items": {
                     "required": true,
                     "title": "Day",
@@ -43,6 +46,7 @@
                             "type": "array",
                             "title": "Time Slots",
                             "format": "tabs-top",
+                            "minItems": 1,
                             "items": {
                                 "required": true,
                                 "title": "Time Slot",
@@ -53,17 +57,21 @@
                                         "required": true,
                                         "title": "Start Time",
                                         "type": "string",
+                                        "pattern": ".{1,}",
                                         "format": "time"
                                     },
                                     "studentNo": {
                                         "required": true,
                                         "type": "integer",
+                                        "minimum": 1,
                                         "title": "Number of Students"
                                     },
                                     "place": {
                                         "type": "string",
                                         "required": true,
+                                        "pattern": ".{1,}",
                                         "title": "Where is the exam?"
+
                                     }
                                 }
                             }

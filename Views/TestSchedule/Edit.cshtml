@@ -8,33 +8,34 @@
 
 <h4>TestSchedule</h4>
 <hr />
+<div id="jseditor"></div>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ID" />
             <div class="form-group">
-                <label asp-for="exam" class="control-label"></label>
-                <input asp-for="exam" class="form-control" />
-                <span asp-validation-for="exam" class="text-danger"></span>
+                @*<label asp-for="exam" class="control-label"></label>*@
+                <input type="hidden" asp-for="exam" class="form-control" />
+                @*<span asp-validation-for="exam" class="text-danger"></span>*@
             </div>
             <div class="form-group">
-                <label asp-for="group" class="control-label"></label>
-                <input asp-for="group" class="form-control" />
-                <span asp-validation-for="group" class="text-danger"></span>
+                @*<label asp-for="group" class="control-label"></label>*@
+                <input type="hidden" asp-for="group" class="form-control" />
+                @*<span asp-validation-for="group" class="text-danger"></span>*@
             </div>
             <div class="form-group">
-                <label asp-for="duration" class="control-label"></label>
-                <input asp-for="duration" class="form-control" />
-                <span asp-validation-for="duration" class="text-danger"></span>
+                @*<label asp-for="duration" class="control-label"></label>*@
+                <input type="hidden" asp-for="duration" class="form-control" />
+                @*<span asp-validation-for="duration" class="text-danger"></span>*@
             </div>
             <div class="form-group">
-                <label asp-for="schedule" class="control-label"></label>
-                <input asp-for="schedule" class="form-control" />
-                <span asp-validation-for="schedule" class="text-danger"></span>
+                @*<label asp-for="schedule" class="control-label"></label>*@
+                <input type="hidden" asp-for="schedule" class="form-control" />
+                @*<span asp-validation-for="schedule" class="text-danger"></span>*@
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input id="submit" type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
@@ -47,3 +48,46 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+<script>
+            // JSON EDITOR SETUP
+    const schema = window.createschema("@ViewBag.ClassList".split(', '))
+    const startval = {
+        group: "@Model.group",
+        exam: "@Model.exam",
+        duration: "@Model.duration",
+        schedule: @Html.Raw(@Model.schedule)
+    }
+            const options = {
+                schema,
+                startval,
+                disable_array_delete_all_rows: true,
+                disable_collapse: true,
+                disable_edit_json: true,
+                disable_properties: true,
+                array_controls_top: true,
+                required_by_default: true,
+                object_layout: 'grid',
+                theme: "bootstrap4"
+            }
+            const jseditor = new window.JSONEditor(document.querySelector("#jseditor"), options)
+            const groupInput = document.getElementById('group')
+            const examInput = document.getElementById('exam')
+            const durationInput = document.getElementById('duration')
+            const scheduleInput = document.getElementById('schedule')
+            jseditor.on('change', () => {
+                const json = jseditor.getValue()
+                groupInput.setAttribute('value', json.group)
+                examInput.setAttribute('value', json.exam)
+                durationInput.setAttribute('value', json.duration)
+                scheduleInput.setAttribute('value', JSON.stringify(json.schedule))
+            })
+            const submit = document.getElementById('submit')
+            submit.addEventListener("click", (e) => {
+
+                if (jseditor.validate().length != 0) {
+                    e.preventDefault()
+                    jseditor.options.show_errors = 'always'
+                }
+            })
+</script>

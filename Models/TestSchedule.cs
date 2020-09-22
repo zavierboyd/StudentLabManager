@@ -10,7 +10,7 @@ namespace StudentLabManager.Models
         public int ID { get; set; }
         public string exam { get; set; }
         public string group { get; set; }
-    public int duration { get; set; }
-    public string schedule { get; set; }
+        public int duration { get; set; }
+        public string schedule { get; set; }
 }
 }

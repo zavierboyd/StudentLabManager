@@ -36,7 +36,7 @@
                 @*<span asp-validation-for="schedule" class="text-danger"></span>*@
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input id="submit" type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
@@ -52,7 +52,7 @@
 
 <script>
             // JSON EDITOR SETUP
-            const schema = window.createschema("@ViewBag.classlist".split(', '))
+            const schema = window.createschema("@ViewBag.ClassList".split(', '))
             const options = {
                 schema,
                 disable_array_delete_all_rows: true,
@@ -61,6 +61,7 @@
                 disable_properties: true,
                 array_controls_top: true,
                 required_by_default: true,
+                show_errors: 'change',
                 object_layout: 'grid',
                 theme: "bootstrap4"
             }
@@ -75,5 +76,13 @@
                 examInput.setAttribute('value', json.exam)
                 durationInput.setAttribute('value', json.duration)
                 scheduleInput.setAttribute('value', JSON.stringify(json.schedule))
+            })
+            const submit = document.getElementById('submit')
+            submit.addEventListener("click", (e) => {
+        
+                if (jseditor.validate().length != 0) {
+                    e.preventDefault()
+                    jseditor.options.show_errors = 'always'
+                }
             })
 </script>

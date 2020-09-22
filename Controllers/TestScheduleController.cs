@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,30 @@ namespace StudentLabManager.Controllers
     {
         private readonly TestScheduleData _context;
 
+        private Tuple<ActiveDirectory, string> AuthenticateUser(HttpContext httpContext)
+        {
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                string UserName = HttpContext.User.Claims.Where(user => user.Type == "UserName").First().Value;
+                var User =  new ActiveDirectory(UserName);
+                if (User.role == "Staff")
+                {
+                    return new Tuple<ActiveDirectory, string>( User, UserName );
+                }
+            }
+                return null;
+
+        }
+        private string[] GetStaffGroup(Tuple<ActiveDirectory, string> tuple)
+        {
+            string UserName = tuple.Item2;
+            ActiveDirectory User = tuple.Item1;
+            string[] ClassGroup = User.GetGroup(UserName);
+            ViewBag.ClassList = ClassGroup;
+            return ClassGroup;
+
+        }
+        
         public TestScheduleController(TestScheduleData context)
         {
             _context = context;
@@ -22,32 +47,53 @@ namespace StudentLabManager.Controllers
         // GET: TestSchedule
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Schedule.ToListAsync());
+            var tuple = AuthenticateUser(HttpContext);
+            if (tuple != null) {
+                ViewBag.ClassList = GetStaffGroup(tuple);
+                return View(await _context.Schedule.ToListAsync());
+            }
+            return View("_InvalidationPage");
+         
+            
         }
 
         // GET: TestSchedule/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            var tuple = AuthenticateUser(HttpContext);
+            if (tuple != null)
             {
-                return NotFound();
-            }
+                ViewBag.ClassList = GetStaffGroup(tuple);
+                if (id == null)
+                {
+                    return NotFound();
+                }
 
-            var testSchedule = await _context.Schedule
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (testSchedule == null)
-            {
-                return NotFound();
-            }
+                var testSchedule = await _context.Schedule
+                    .FirstOrDefaultAsync(m => m.ID == id);
+                if (testSchedule == null)
+                {
+                    return NotFound();
+                }
 
-            return View(testSchedule);
+                return View(testSchedule);
+            }
+            return View("_InvalidationPage");
+
+            
         }
 
         // GET: TestSchedule/Create
         public IActionResult Create()
         {
-            ViewBag.classlist = string.Join(", ", new string[] {"class1", "class2"});
-            return View();
+            var tuple = AuthenticateUser(HttpContext);
+            if (tuple != null)
+            {
+                ViewBag.ClassList = GetStaffGroup(tuple);
+                return View();
+            }
+            return View("_InvalidationPage");
+            
         }
 
         // POST: TestSchedule/Create
@@ -69,17 +115,24 @@ namespace StudentLabManager.Controllers
         // GET: TestSchedule/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            var tuple = AuthenticateUser(HttpContext);
+            if (tuple != null)
             {
-                return NotFound();
-            }
+                ViewBag.ClassList = GetStaffGroup(tuple);
+                if (id == null)
+                {
+                    return NotFound();
+                }
 
-            var testSchedule = await _context.Schedule.FindAsync(id);
-            if (testSchedule == null)
-            {
-                return NotFound();
+                var testSchedule = await _context.Schedule.FindAsync(id);
+                if (testSchedule == null)
+                {
+                    return NotFound();
+                }
+                return View(testSchedule);
             }
-            return View(testSchedule);
+            return View("_InvalidationPage");
+           
         }
 
         // POST: TestSchedule/Edit/5
@@ -118,21 +171,33 @@ namespace StudentLabManager.Controllers
         }
 
         // GET: TestSchedule/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
         {
-            if (id == null)
+            var tuple = AuthenticateUser(HttpContext);
+            if (tuple != null)
             {
-                return NotFound();
-            }
+                if (id == null)
+                {
+                    return NotFound();
+                }
 
-            var testSchedule = await _context.Schedule
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (testSchedule == null)
-            {
-                return NotFound();
-            }
+                var testSchedule = await _context.Schedule
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(m => m.ID == id);
+                if (testSchedule == null)
+                {
+                    return NotFound();
+                }
+                if (saveChangesError.GetValueOrDefault())
+                {
+                    ViewData["ErrorMessage"] =
+                        "Delete Failed, Try again, if problems persist" +
+                        "see your System Administrator.";
+                }
 
-            return View(testSchedule);
+                return View(testSchedule);
+            }
+            return View("_InvalidationPage");
         }
 
         // POST: TestSchedule/Delete/5
@@ -140,10 +205,27 @@ namespace StudentLabManager.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var testSchedule = await _context.Schedule.FindAsync(id);
-            _context.Schedule.Remove(testSchedule);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            var tuple = AuthenticateUser(HttpContext);
+            if (tuple != null)
+            {
+                var testSchedule = await _context.Schedule.FindAsync(id);
+                if (testSchedule == null)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                try
+                {
+                    _context.Schedule.Remove(testSchedule);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException)
+                {
+                    // Log the error
+                    return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
+                }
+            }
+            return View("_InvalidationPage");
         }
 
         private bool TestScheduleExists(int id)

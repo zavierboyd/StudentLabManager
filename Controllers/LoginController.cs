@@ -56,7 +56,8 @@ namespace StudentLabManager.Controllers
 
             return View();
         }
-    }
 
+    }
+    
 
 }

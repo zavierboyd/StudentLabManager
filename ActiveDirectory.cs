@@ -14,7 +14,7 @@ namespace StudentLabManager
         public string displayName { get; set; }
         public Principal user_Info { get; set; }
         public string role { get; set; }
-        public ActiveDirectory(string UserName,string UserPassword, PrincipalContext ser)
+        public ActiveDirectory(string UserName, string UserPassword, PrincipalContext ser)
         {
             this.username = UserName;
             this.password = UserPassword;
@@ -22,7 +22,7 @@ namespace StudentLabManager
             this.user_Info = Principal.FindByIdentity(ser, UserName);
             this.displayName = this.user_Info.DisplayName;
             this.role = this.getRole();
-            
+
 
         }
 
@@ -63,5 +63,6 @@ namespace StudentLabManager
             }
             return role;
         }
+
     }
 }

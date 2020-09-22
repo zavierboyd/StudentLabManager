@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace StudentLabManager.Migrations
 {
@@ -7,11 +8,17 @@ namespace StudentLabManager.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-           
+            migrationBuilder.CreateTable(
+                name: "Schedule",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                }) ;
+
             migrationBuilder.AddColumn<string>(
-                name: "group",
-                table: "Schedule",
-                nullable: false);
+               name: "group",
+               table: "Schedule",
+               nullable: false);
 
             migrationBuilder.AddColumn<int>(
                 name: "duration",
@@ -28,6 +35,17 @@ namespace StudentLabManager.Migrations
                 name: "schedule",
                 table: "Schedule",
                 nullable: true);
+
+            migrationBuilder.DropColumn(
+                name: "Id",
+                table: "Schedule"
+                );
+
+            migrationBuilder.AddColumn<int>(
+                name: "Id",
+                table: "Schedule").Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+           
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -47,6 +65,9 @@ namespace StudentLabManager.Migrations
             migrationBuilder.DropColumn(
                 name: "group",
                 table: "Schedule");
+
+            migrationBuilder.DropTable(
+                name: "Schedule");
         }
             
     }

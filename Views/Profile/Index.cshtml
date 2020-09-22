@@ -1,0 +1,48 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<h3 class="text-center">Profile Details</h3>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th class="text-left">Profile</th>
+            <th class="text-right">Details</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="table-hover">
+            <td>Name</td>
+            <td class="text-right flex-column">@ViewBag.DisplayName</td>
+        </tr>
+
+        <tr class="table-hover">
+            <td>Role</td>
+            <td class="text-right flex-column">@ViewBag.Role</td>
+        </tr>
+
+        <tr class="table-hover">
+            <td>Password</td>
+            <td class="text-right flex-column">
+                <form action="Profile/ChangeViewToPassword" method="POST">
+                    <button class="btn btn-info" type="submit" name="ClassName">Change</button>
+                </form>
+            </td>
+        </tr>
+
+        @if (User.Claims.Where(user => user.Type == "Role").First().Value == "Staff")
+        {
+            <tr class="table-hover">
+                <td>Reset Student Password</td>
+                <td class="text-right flex-column">
+                    <form action="Profile/ChangeViewToStudentPassword" method="POST">
+                        <button class="btn btn-info" type="submit" name="ClassName">Change</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>

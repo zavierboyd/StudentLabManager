@@ -13,6 +13,7 @@ namespace StudentLabManager
         public PrincipalContext context { get; set; }
         public string displayName { get; set; }
         public Principal user_Info { get; set; }
+        public string samAccountName { get; set; }
         public string role { get; set; }
         public ActiveDirectory(string UserName,string UserPassword, PrincipalContext ser)
         {
@@ -21,9 +22,7 @@ namespace StudentLabManager
             this.context = ser;
             this.user_Info = Principal.FindByIdentity(ser, UserName);
             this.displayName = this.user_Info.DisplayName;
-            this.role = this.getRole();
-            
-
+            this.role = this.GetRole();
         }
 
         public ActiveDirectory(string UserName)
@@ -33,11 +32,11 @@ namespace StudentLabManager
             this.context = ser;
             this.user_Info = Principal.FindByIdentity(ser, UserName);
             this.displayName = this.user_Info.DisplayName;
-            this.role = this.getRole();
+            this.role = this.GetRole();
 
         }
 
-        public string[] GetGroup(string UserName)
+        public string[] GetGroup()
         {
             Array ClassList = this.user_Info.GetGroups().ToArray();
             int ClassCount = 0;
@@ -54,7 +53,7 @@ namespace StudentLabManager
             return ClassGroup;
         }
 
-        public string getRole()
+        public string GetRole()
         {
             string role = this.user_Info.GetGroups().ToArray()[1].ToString();
             if (role != "Student")
@@ -62,6 +61,29 @@ namespace StudentLabManager
                 role = "Staff";
             }
             return role;
+        }
+
+        public Boolean ChangeOwnPassword (string oldPassword,string newPassword)
+        {
+
+            if (this.context.ValidateCredentials(this.user_Info.SamAccountName, oldPassword))
+            {
+                var uer = UserPrincipal.FindByIdentity(this.context, this.user_Info.SamAccountName);
+                uer.ChangePassword(oldPassword, newPassword);
+                uer.Save();
+                return true;
+            } else
+            {
+                return false;
+            }
+
+        }
+
+        public Boolean ResetPassword(string studentName,string newPassword)
+        {
+            var uer = UserPrincipal.FindByIdentity(this.context, studentName);
+            uer.SetPassword(newPassword);
+            return true;
         }
     }
 }

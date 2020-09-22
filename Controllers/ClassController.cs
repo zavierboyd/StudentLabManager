@@ -12,7 +12,7 @@ namespace StudentLabManager.Controllers
             {
                 string UserName = HttpContext.User.Claims.Where(user => user.Type == "UserName").First().Value;
                 ActiveDirectory User = new ActiveDirectory(UserName);
-                string[] ClassGroup = User.GetGroup(UserName);
+                string[] ClassGroup = User.GetGroup();
                 ViewBag.ClassList = ClassGroup;
                 return View();
             } else

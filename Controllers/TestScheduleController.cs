@@ -49,7 +49,7 @@ namespace StudentLabManager.Controllers
         {
             var tuple = AuthenticateUser(HttpContext);
             if (tuple != null) {
-                //ViewBag.ClassList = GetStaffGroup(tuple);
+                ViewBag.ClassList = GetStaffGroup(tuple);
                 return View(await _context.Schedule.ToListAsync());
             }
             return View("_InvalidationPage");

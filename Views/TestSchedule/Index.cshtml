@@ -13,16 +13,13 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.exam)
+                Exam
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.group)
+                Course
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.duration)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.schedule)
+                Exam Duration
             </th>
             <th></th>
         </tr>
@@ -38,9 +35,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.duration)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.schedule)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |

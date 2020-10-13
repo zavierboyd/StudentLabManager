@@ -50,11 +50,11 @@ namespace StudentLabManager.Controllers
             }
         }
 
-        public ActionResult StudentPassword(string studentAccount,string newPassword)
+        public ActionResult StudentPassword(string studentAccount,string newPassword,string adminPassword)
         {
             string UserName = HttpContext.User.Claims.Where(user => user.Type == "UserName").First().Value;
             ActiveDirectory User = new ActiveDirectory(UserName);
-            if (User.ResetPassword(studentAccount, newPassword))
+            if (User.ResetPassword(studentAccount, newPassword, adminPassword))
             {
                 ViewBag.PasswordMessage = "Ture";
                 return View();

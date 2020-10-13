@@ -40,13 +40,16 @@ namespace StudentLabManager.Controllers
         {
             string UserName = HttpContext.User.Claims.Where(user => user.Type == "UserName").First().Value;
             ActiveDirectory User = new ActiveDirectory(UserName);
-            if (User.ChangeOwnPassword(oldPassword, newPassword)){
-                ViewBag.PasswordMessage = "Ture";
-                return View();
+            if (User.ChangeOwnPassword(oldPassword, newPassword))
+            {
+                ViewBag.PasswordState = true;
+                ViewBag.PasswordMessage = "Password Changed!";
+                return View("Password");
             } else
             {
-                ViewBag.PasswordMessage = "False";
-                return View();
+                ViewBag.PasswordState = false;
+                ViewBag.PasswordMessage = "Password Change Failed";
+                return View("Password");
             }
         }
 
@@ -56,13 +59,15 @@ namespace StudentLabManager.Controllers
             ActiveDirectory User = new ActiveDirectory(UserName);
             if (User.ResetPassword(studentAccount, newPassword, adminPassword))
             {
-                ViewBag.PasswordMessage = "Ture";
-                return View();
+                ViewBag.PasswordState = true;
+                ViewBag.PasswordMessage = "Password Changed!";
+                return View("StudentPassword");
             }
             else
             {
-                ViewBag.PasswordMessage = "False";
-                return View();
+                ViewBag.PasswordState = false;
+                ViewBag.PasswordMessage = "Password Change Failed";
+                return View("StudentPassword");
             }
         }
     }

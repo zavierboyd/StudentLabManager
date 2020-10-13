@@ -14,7 +14,7 @@ namespace StudentLabManager
         public Principal user_Info { get; set; }
         public string samAccountName { get; set; }
         public string role { get; set; }
-        public ActiveDirectory(string UserName,string UserPassword, PrincipalContext ser)
+        public ActiveDirectory(string UserName,string UserPassword, PrincipalContext ser) //For identity with password
         {
             this.username = UserName;
             this.context = ser;
@@ -23,7 +23,7 @@ namespace StudentLabManager
             this.role = this.GetRole();
         }
 
-        public ActiveDirectory(string UserName)
+        public ActiveDirectory(string UserName) // For identity without password
         {
             this.username = UserName;
             PrincipalContext ser = new PrincipalContext(ContextType.Domain, "uict.nz", "DC=uict,DC=nz");
@@ -34,7 +34,7 @@ namespace StudentLabManager
 
         }
 
-        public string[] GetGroup(string username = "")
+        public string[] GetGroup(string username = "") //Get User's Group List. 
         {
             Array ClassList = this.user_Info.GetGroups().ToArray();
             int ClassCount = 0;
@@ -51,7 +51,7 @@ namespace StudentLabManager
             return ClassGroup;
         }
 
-        public string GetRole()
+        public string GetRole() //Get User's Role
         {
             string role = this.user_Info.GetGroups().ToArray()[1].ToString();
             if (role != "Student")
@@ -61,28 +61,49 @@ namespace StudentLabManager
             return role;
         }
 
-        public Boolean ChangeOwnPassword (string oldPassword,string newPassword)
+        public Boolean ChangeOwnPassword (string oldPassword,string newPassword) //Set User's own password
         {
-
-            if (this.context.ValidateCredentials(this.user_Info.SamAccountName, oldPassword))
+            try
             {
-                var uer = UserPrincipal.FindByIdentity(this.context, this.user_Info.SamAccountName);
-                uer.ChangePassword(oldPassword, newPassword);
-                uer.Save();
-                return true;
-            } else
+                if (this.context.ValidateCredentials(this.user_Info.SamAccountName, oldPassword))
+                {
+                    var uer = UserPrincipal.FindByIdentity(this.context, this.user_Info.SamAccountName);
+                    uer.ChangePassword(oldPassword, newPassword);
+                    uer.Save();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            } catch(Exception e)
             {
                 return false;
             }
 
         }
 
-        public Boolean ResetPassword(string studentName,string newPassword,string adminPassword)
+        public Boolean ResetPassword(string studentName,string newPassword,string adminPassword) //Set student's password by Staff
         {
-            PrincipalContext ser = new PrincipalContext(ContextType.Domain, "uict.nz", "DC=uict,DC=nz", this.username, adminPassword);
-            var uer = UserPrincipal.FindByIdentity(ser, studentName);
-            uer.SetPassword(newPassword);
-            return true;
+            try
+            {
+                PrincipalContext ser = new PrincipalContext(ContextType.Domain, "uict.nz", "DC=uict,DC=nz", this.username, adminPassword);
+                if (ser.ValidateCredentials(this.username, adminPassword))
+                {
+                    var uer = UserPrincipal.FindByIdentity(ser, studentName);
+                    uer.SetPassword(newPassword);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            } catch (Exception e)
+            {
+                throw (e);
+            }
+            
+            
         }
     }
 }

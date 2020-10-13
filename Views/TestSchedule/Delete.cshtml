@@ -8,38 +8,78 @@
 
 <h3>Are you sure you want to delete this?</h3>
 <div>
-    <h4>TestSchedule</h4>
+    <h4>Test Schedule</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.exam)
+        <dt class="col-sm-2">
+            Exam
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.exam)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.group)
+        <dt class="col-sm-2">
+            Course
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.group)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.duration)
+        <dt class="col-sm-2">
+            Exam Duration
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.duration)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.schedule)
+        <dt class="col-sm-2">
+            Schedule
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.schedule)
+        <dd id="schedule" class="col-sm-10">
+
         </dd>
     </dl>
-    
+
     <form asp-action="Delete">
         <input type="hidden" asp-for="ID" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>
 </div>
+<style>
+    table, table * {
+        border: black 1px solid
+    }
+
+        table td, table th {
+            padding: 0.5rem 1rem;
+        }
+</style>
+<script>
+    const table = document.createElement("table")
+    table.innerHTML += "<tr><th>Day</th><th>Start Time</th><th>Number of Students</th><th>Place</th></tr>"
+    const schedule = @Html.Raw(@Model.schedule);
+    for (let day of schedule) {
+        const row = document.createElement("tr")
+        dayelm = document.createElement("td");
+        dayelm.innerHTML = day.date
+        row.appendChild(dayelm)
+        row.appendChild(document.createElement("td"))
+        row.appendChild(document.createElement("td"))
+        row.appendChild(document.createElement("td"))
+        table.appendChild(row)
+        day.timeSlots = day.timeSlots.sort((slot1, slot2) => slot1.time < slot2.time)
+        for (let slot of day.timeSlots) {
+            const row = document.createElement("tr")
+            row.appendChild(document.createElement("td"))
+            time = document.createElement("td")
+            time.innerHTML = slot.startTime
+            students = document.createElement("td")
+            students.innerHTML = slot.studentNo
+            place = document.createElement("td")
+            place.innerHTML = slot.place
+            row.appendChild(time)
+            row.appendChild(students)
+            row.appendChild(place)
+            table.appendChild(row)
+        }
+    }
+    document.getElementById("schedule").appendChild(table);
+</script>

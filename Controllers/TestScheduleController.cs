@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using StudentLabManager.Data;
 using StudentLabManager.Models;
 
@@ -75,6 +76,8 @@ namespace StudentLabManager.Controllers
                 {
                     return NotFound();
                 }
+                // Deserialization of Schedule
+                // ViewBag.Schedule = JsonConvert.DeserializeObject<ExamDays>("{MyArray:" + testSchedule.schedule + "}");
 
                 return View(testSchedule);
             }

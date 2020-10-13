@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace StudentLabManager
 {
-    // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse); 
+    // JsonConvert.DeserializeObject<ExamDays>("{MyArray:" + testSchedule.schedule + "}");
     public class TimeSlot
     {
         [JsonProperty("startTime")]

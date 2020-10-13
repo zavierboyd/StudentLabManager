@@ -6,7 +6,6 @@
 
 <h1>Create</h1>
 
-<h4>TestSchedule</h4>
 <hr />
 <div id="jseditor"></div>
 <div class="row">
@@ -52,7 +51,7 @@
 
 <script>
             // JSON EDITOR SETUP
-            const schema = window.createschema("@ViewBag.ClassList".split(', '))
+            const schema = window.createschema("@ViewBag.ClassList".split(", "))
             const options = {
                 schema,
                 disable_array_delete_all_rows: true,
@@ -79,7 +78,7 @@
             })
             const submit = document.getElementById('submit')
             submit.addEventListener("click", (e) => {
-        
+
                 if (jseditor.validate().length != 0) {
                     e.preventDefault()
                     jseditor.options.show_errors = 'always'

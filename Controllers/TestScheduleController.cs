@@ -34,7 +34,7 @@ namespace StudentLabManager.Controllers
             string UserName = tuple.Item2;
             ActiveDirectory User = tuple.Item1;
             string[] ClassGroup = User.GetGroup(UserName);
-            ViewBag.ClassList = ClassGroup;
+            //ViewBag.ClassList = ClassGroup;
             return ClassGroup;
 
         }
@@ -49,7 +49,7 @@ namespace StudentLabManager.Controllers
         {
             var tuple = AuthenticateUser(HttpContext);
             if (tuple != null) {
-                ViewBag.ClassList = GetStaffGroup(tuple);
+                //ViewBag.ClassList = GetStaffGroup(tuple);
                 return View(await _context.Schedule.ToListAsync());
             }
             return View("_InvalidationPage");
@@ -63,7 +63,7 @@ namespace StudentLabManager.Controllers
             var tuple = AuthenticateUser(HttpContext);
             if (tuple != null)
             {
-                ViewBag.ClassList = GetStaffGroup(tuple);
+                //ViewBag.ClassList = GetStaffGroup(tuple);
                 if (id == null)
                 {
                     return NotFound();
@@ -89,7 +89,7 @@ namespace StudentLabManager.Controllers
             var tuple = AuthenticateUser(HttpContext);
             if (tuple != null)
             {
-                ViewBag.ClassList = GetStaffGroup(tuple);
+                ViewBag.ClassList = String.Join(", ", GetStaffGroup(tuple));
                 return View();
             }
             return View("_InvalidationPage");
@@ -103,13 +103,18 @@ namespace StudentLabManager.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("exam,group,duration,schedule")] TestSchedule testSchedule)
         {
-            if (ModelState.IsValid)
+            var tuple = AuthenticateUser(HttpContext);
+            if (tuple != null)
             {
-                _context.Add(testSchedule);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    _context.Add(testSchedule);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                return View(testSchedule);
             }
-            return View(testSchedule);
+            return View("_InvalidationPage");
         }
 
         // GET: TestSchedule/Edit/5
@@ -118,7 +123,7 @@ namespace StudentLabManager.Controllers
             var tuple = AuthenticateUser(HttpContext);
             if (tuple != null)
             {
-                ViewBag.ClassList = GetStaffGroup(tuple);
+                ViewBag.ClassList = String.Join(", ", GetStaffGroup(tuple));
                 if (id == null)
                 {
                     return NotFound();
@@ -142,32 +147,37 @@ namespace StudentLabManager.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,exam,group,duration,schedule")] TestSchedule testSchedule)
         {
-            if (id != testSchedule.ID)
+            var tuple = AuthenticateUser(HttpContext);
+            if (tuple != null)
             {
-                return NotFound();
-            }
+                if (id != testSchedule.ID)
+                {
+                    return NotFound();
+                }
 
-            if (ModelState.IsValid)
-            {
-                try
+                if (ModelState.IsValid)
                 {
-                    _context.Update(testSchedule);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TestScheduleExists(testSchedule.ID))
+                    try
                     {
-                        return NotFound();
+                        _context.Update(testSchedule);
+                        await _context.SaveChangesAsync();
                     }
-                    else
+                    catch (DbUpdateConcurrencyException)
                     {
-                        throw;
+                        if (!TestScheduleExists(testSchedule.ID))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
                     }
+                    return RedirectToAction(nameof(Index));
                 }
-                return RedirectToAction(nameof(Index));
+                return View(testSchedule);
             }
-            return View(testSchedule);
+            return View("_InvalidationPage");
         }
 
         // GET: TestSchedule/Delete/5

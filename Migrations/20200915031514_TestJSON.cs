@@ -44,6 +44,7 @@ namespace StudentLabManager.Migrations
             migrationBuilder.AddColumn<int>(
                 name: "Id",
                 table: "Schedule").Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+            // make ID column a Auto Increment
 
            
         }

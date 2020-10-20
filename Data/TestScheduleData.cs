@@ -16,6 +16,7 @@ namespace StudentLabManager.Data
 
 
         public DbSet<TestSchedule> Schedule { get; set; }
+        // Entity framework to use with controllers and database.
     }
 }
 

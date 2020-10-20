@@ -22,12 +22,12 @@ namespace StudentLabManager.Controllers
             {
                 string UserName = HttpContext.User.Claims.Where(user => user.Type == "UserName").First().Value;
                 var User =  new ActiveDirectory(UserName);
-                if (User.role == "Staff")
+                if (User.role == "Staff") // Tests if the authenticated user is a staff member
                 {
                     return new Tuple<ActiveDirectory, string>( User, UserName );
                 }
             }
-                return null;
+            return null;
 
         }
         private string[] GetStaffGroup(Tuple<ActiveDirectory, string> tuple)
@@ -35,7 +35,6 @@ namespace StudentLabManager.Controllers
             string UserName = tuple.Item2;
             ActiveDirectory User = tuple.Item1;
             string[] ClassGroup = User.GetGroup(UserName);
-            //ViewBag.ClassList = ClassGroup;
             return ClassGroup;
 
         }
@@ -62,9 +61,8 @@ namespace StudentLabManager.Controllers
         public async Task<IActionResult> Details(int? id)
         {
             var tuple = AuthenticateUser(HttpContext);
-            if (tuple != null)
+            if (tuple != null) // Tests if user is authenticated and is a staff member
             {
-                //ViewBag.ClassList = GetStaffGroup(tuple);
                 if (id == null)
                 {
                     return NotFound();
@@ -72,12 +70,11 @@ namespace StudentLabManager.Controllers
 
                 var testSchedule = await _context.Schedule
                     .FirstOrDefaultAsync(m => m.ID == id);
+                // Gets the testschedule which has the ID of id
                 if (testSchedule == null)
                 {
                     return NotFound();
                 }
-                // Deserialization of Schedule
-                // ViewBag.Schedule = JsonConvert.DeserializeObject<ExamDays>("{MyArray:" + testSchedule.schedule + "}");
 
                 return View(testSchedule);
             }
@@ -90,9 +87,10 @@ namespace StudentLabManager.Controllers
         public IActionResult Create()
         {
             var tuple = AuthenticateUser(HttpContext);
-            if (tuple != null)
+            if (tuple != null) // Tests if user is authenticated and is a staff member
             {
                 ViewBag.ClassList = String.Join(", ", GetStaffGroup(tuple));
+                // Adds all the classes the Staff member manages for the cshtml script to use.
                 return View();
             }
             return View("_InvalidationPage");
@@ -107,10 +105,10 @@ namespace StudentLabManager.Controllers
         public async Task<IActionResult> Create([Bind("exam,group,duration,schedule")] TestSchedule testSchedule)
         {
             var tuple = AuthenticateUser(HttpContext);
-            if (tuple != null)
+            if (tuple != null) // Tests if user is authenticated and is a staff member
             {
                 if (ModelState.IsValid)
-                {
+                { // Saves the testschedule to the database
                     _context.Add(testSchedule);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
@@ -124,15 +122,18 @@ namespace StudentLabManager.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             var tuple = AuthenticateUser(HttpContext);
-            if (tuple != null)
+            if (tuple != null) // Tests if user is authenticated and is a staff member
             {
                 ViewBag.ClassList = String.Join(", ", GetStaffGroup(tuple));
+                // Adds all the classes the Staff member manages for the cshtml script to use.
+
                 if (id == null)
                 {
                     return NotFound();
                 }
 
                 var testSchedule = await _context.Schedule.FindAsync(id);
+                // Gets the testschedule which has the ID of id
                 if (testSchedule == null)
                 {
                     return NotFound();
@@ -151,7 +152,7 @@ namespace StudentLabManager.Controllers
         public async Task<IActionResult> Edit(int id, [Bind("ID,exam,group,duration,schedule")] TestSchedule testSchedule)
         {
             var tuple = AuthenticateUser(HttpContext);
-            if (tuple != null)
+            if (tuple != null) // Tests if user is authenticated and is a staff member
             {
                 if (id != testSchedule.ID)
                 {
@@ -164,6 +165,7 @@ namespace StudentLabManager.Controllers
                     {
                         _context.Update(testSchedule);
                         await _context.SaveChangesAsync();
+                        // Saves the updated testschedule to the database
                     }
                     catch (DbUpdateConcurrencyException)
                     {
@@ -175,6 +177,7 @@ namespace StudentLabManager.Controllers
                         {
                             throw;
                         }
+                        // Adds an error handler for when there the testschedule referenced does not exist
                     }
                     return RedirectToAction(nameof(Index));
                 }
@@ -187,7 +190,7 @@ namespace StudentLabManager.Controllers
         public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
         {
             var tuple = AuthenticateUser(HttpContext);
-            if (tuple != null)
+            if (tuple != null) // Tests if user is authenticated and is a staff member
             {
                 if (id == null)
                 {
@@ -197,6 +200,7 @@ namespace StudentLabManager.Controllers
                 var testSchedule = await _context.Schedule
                     .AsNoTracking()
                     .FirstOrDefaultAsync(m => m.ID == id);
+                // Get testschedule to delete
                 if (testSchedule == null)
                 {
                     return NotFound();
@@ -206,9 +210,11 @@ namespace StudentLabManager.Controllers
                     ViewData["ErrorMessage"] =
                         "Delete Failed, Try again, if problems persist" +
                         "see your System Administrator.";
+                    // If there was an error when deleting, notify the user.
                 }
 
                 return View(testSchedule);
+                // Show testschedule they will delete
             }
             return View("_InvalidationPage");
         }
@@ -219,7 +225,7 @@ namespace StudentLabManager.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var tuple = AuthenticateUser(HttpContext);
-            if (tuple != null)
+            if (tuple != null) // Tests if user is authenticated and is a staff member
             {
                 var testSchedule = await _context.Schedule.FindAsync(id);
                 if (testSchedule == null)
@@ -230,11 +236,12 @@ namespace StudentLabManager.Controllers
                 {
                     _context.Schedule.Remove(testSchedule);
                     await _context.SaveChangesAsync();
+                    // Delete testschedule from database
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateException)
                 {
-                    // Log the error
+                    // As there was an error, redirect the user to the delete screen and notify them that there was an error.
                     return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
                 }
             }

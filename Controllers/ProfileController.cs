@@ -11,7 +11,7 @@ namespace StudentLabManager.Controllers
     {
         public IActionResult Index()
         {
-            if (HttpContext.User.Identity.IsAuthenticated)
+            if (HttpContext.User.Identity.IsAuthenticated) //User must be logged.
             {
                 string UserName = HttpContext.User.Claims.Where(user => user.Type == "UserName").First().Value;
                 ActiveDirectory User = new ActiveDirectory(UserName);
@@ -38,8 +38,11 @@ namespace StudentLabManager.Controllers
 
         public ActionResult PasswordChange (string oldPassword,string newPassword)
         {
+            //Claim a ActiveDirectory object:User for further code.
             string UserName = HttpContext.User.Claims.Where(user => user.Type == "UserName").First().Value;
             ActiveDirectory User = new ActiveDirectory(UserName);
+
+            //invoke ChangeOwnPassword methed, it will return if the operation is success.
             if (User.ChangeOwnPassword(oldPassword, newPassword))
             {
                 ViewBag.PasswordState = true;
@@ -55,8 +58,11 @@ namespace StudentLabManager.Controllers
 
         public ActionResult StudentPassword(string studentAccount,string newPassword,string adminPassword)
         {
+            //Claim a ActiveDirectory object:User for further code.
             string UserName = HttpContext.User.Claims.Where(user => user.Type == "UserName").First().Value;
             ActiveDirectory User = new ActiveDirectory(UserName);
+
+            ////invoke ResetPassword methed, it will return if the operation is success.
             if (User.ResetPassword(studentAccount, newPassword, adminPassword))
             {
                 ViewBag.PasswordState = true;

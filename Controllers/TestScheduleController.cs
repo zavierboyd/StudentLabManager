@@ -32,9 +32,8 @@ namespace StudentLabManager.Controllers
         }
         private string[] GetStaffGroup(Tuple<ActiveDirectory, string> tuple)
         {
-            string UserName = tuple.Item2;
             ActiveDirectory User = tuple.Item1;
-            string[] ClassGroup = User.GetGroup(UserName);
+            string[] ClassGroup = User.GetGroup();
             //ViewBag.ClassList = ClassGroup;
             return ClassGroup;
 

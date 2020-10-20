@@ -19,9 +19,9 @@
         </div>
         @if (ViewBag.LoginError != null)
         {
-            <div>
-                <p>Username or Password is not correct! Please try again!</p>
-            </div>
+    <div class="alert alert-warning">
+        <strong>Oops!</strong> Username or Password is not correct! Please try again!
+    </div>
         }
         <div>
             <p><input type="submit" value="Login" /></p>

@@ -9,12 +9,11 @@ namespace StudentLabManager
     public class ActiveDirectory
     {
         public string username { get; set; }
-        public PrincipalContext context { get; set; }
+        public PrincipalContext context { get; set; } // info about Doamin
         public string displayName { get; set; }
         public Principal user_Info { get; set; }
-        public string samAccountName { get; set; }
         public string role { get; set; }
-        public ActiveDirectory(string UserName,string UserPassword, PrincipalContext ser) //For identity with password
+        public ActiveDirectory(string UserName,string UserPassword, PrincipalContext ser) //Constructor methed of the Class For identity with password
         {
             this.username = UserName;
             this.context = ser;
@@ -23,10 +22,12 @@ namespace StudentLabManager
             this.role = this.GetRole();
         }
 
-        public ActiveDirectory(string UserName) // For identity without password
+        public ActiveDirectory(string UserName) //Constructor methed of the Class for identity without password
         {
             this.username = UserName;
-            PrincipalContext ser = new PrincipalContext(ContextType.Domain, "uict.nz", "DC=uict,DC=nz");
+            PrincipalContext ser = new PrincipalContext(ContextType.Domain, "uict.nz", "DC=uict,DC=nz");  //UCOL Domain
+            
+            //Assign values to object.
             this.context = ser;
             this.user_Info = Principal.FindByIdentity(ser, UserName);
             this.displayName = this.user_Info.DisplayName;
@@ -34,17 +35,17 @@ namespace StudentLabManager
 
         }
 
-        public string[] GetGroup(string username = "") //Get User's Group List. 
+        public string[] GetGroup() //Get User's Group List. 
         {
-            Array ClassList = this.user_Info.GetGroups().ToArray();
-            int ClassCount = 0;
-            string[] ClassGroup = new string[ClassCount];
+            Array ClassList = this.user_Info.GetGroups().ToArray(); //Get group list and transfer it to be an array.
+            int ClassCount = 0; //for loop function to count the class' number.
+            string[] ClassGroup = new string[ClassCount]; //claim a string array with length.
             foreach (object ClassName in ClassList)
             {
-                if (ClassName.ToString().Length == 4)
+                if (ClassName.ToString().Length == 4) //User's Class only have 4 word
                 {
-                    Array.Resize(ref ClassGroup, ClassGroup.Length + 1);
-                    ClassGroup[ClassCount] = ClassName.ToString();
+                    Array.Resize(ref ClassGroup, ClassGroup.Length + 1);//extends the array length with copy itself  before add new data.
+                    ClassGroup[ClassCount] = ClassName.ToString();//add class data
                     ClassCount++;
                 }
             };
@@ -53,10 +54,10 @@ namespace StudentLabManager
 
         public string GetRole() //Get User's Role
         {
-            string role = this.user_Info.GetGroups().ToArray()[1].ToString();
-            if (role != "Student")
+            string role = this.user_Info.GetGroups().ToArray()[1].ToString(); //We use the second data on the Group List to identity user's role.
+            if (role != "Student") // if they are user, the second data will be "Student".
             {
-                role = "Staff";
+                role = "Staff"; //if not,they are Staff
             }
             return role;
         }
@@ -65,7 +66,7 @@ namespace StudentLabManager
         {
             try
             {
-                if (this.context.ValidateCredentials(this.user_Info.SamAccountName, oldPassword))
+                if (this.context.ValidateCredentials(this.user_Info.SamAccountName, oldPassword)) //Valid User by their username and password
                 {
                     var uer = UserPrincipal.FindByIdentity(this.context, this.user_Info.SamAccountName);
                     uer.ChangePassword(oldPassword, newPassword);
@@ -87,10 +88,10 @@ namespace StudentLabManager
         {
             try
             {
-                PrincipalContext ser = new PrincipalContext(ContextType.Domain, "uict.nz", "DC=uict,DC=nz", this.username, adminPassword);
+                PrincipalContext ser = new PrincipalContext(ContextType.Domain, "uict.nz", "DC=uict,DC=nz", this.username, adminPassword); //Check if the user is admin 
                 if (ser.ValidateCredentials(this.username, adminPassword))
                 {
-                    var uer = UserPrincipal.FindByIdentity(ser, studentName);
+                    var uer = UserPrincipal.FindByIdentity(ser, studentName);//Get user's info as Admin
                     uer.SetPassword(newPassword);
                     return true;
                 }

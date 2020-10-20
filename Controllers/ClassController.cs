@@ -7,7 +7,7 @@ namespace StudentLabManager.Controllers
 {
     public class ClassController : Controller
     {
-        private Tuple<ActiveDirectory, string> AuthenticateUser(HttpContext httpContext)
+        private Tuple<ActiveDirectory, string> AuthenticateUser(HttpContext httpContext) //Authenticate User by their Username stored in the cookies.
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
@@ -18,11 +18,10 @@ namespace StudentLabManager.Controllers
             return null;
 
         }
-        private string[] GetGroups(Tuple<ActiveDirectory, string> tuple)
+        private string[] GetGroups(Tuple<ActiveDirectory, string> tuple) //Get group list of the user who has logged.
         {
-            string UserName = tuple.Item2;
             ActiveDirectory User = tuple.Item1;
-            string[] ClassGroup = User.GetGroup(UserName);
+            string[] ClassGroup = User.GetGroup();
             return ClassGroup;
 
         }
@@ -45,7 +44,7 @@ namespace StudentLabManager.Controllers
         [HttpPost]
         public ActionResult ClassChoose(string ClassName)
         {
-            return Redirect("ClassDetails/?class=" + ClassName);
+            return Redirect("ClassDetails/?class=" + ClassName); //when user click the view button. 
         }
         public IActionResult ClassDetails()
         {

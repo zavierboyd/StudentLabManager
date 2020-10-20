@@ -20,23 +20,25 @@ namespace StudentLabManager.Controllers
         [HttpPost]
         public ActionResult form1(string txtuser, string pwpw)
         {
-            ViewBag.Name = pwpw;
-            Console.WriteLine(txtuser);
+            //Claim the context of Principal by Domain info and User info
             PrincipalContext ser = new PrincipalContext(ContextType.Domain, "uict.nz", "DC=uict,DC=nz", txtuser, pwpw);
+            
+            //Check user's password
             Boolean isValidUser = ser.ValidateCredentials(txtuser, pwpw);
+
             if (isValidUser) {
+                //store user's information into Cookies:Username,Role
                 ActiveDirectory User = new ActiveDirectory(txtuser,pwpw, ser);
                 ViewBag.Id = User.displayName;
                 var claims = new[] { new Claim("UserName", txtuser), new Claim("Role", User.role) };
                 ViewBag.Role = User.role;
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
                 ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-
                 Task.Run(async () =>
                 {
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
                 }).Wait();
+
                 return View("Confirmation");
             } else
             {

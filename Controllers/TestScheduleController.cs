@@ -20,7 +20,7 @@ namespace StudentLabManager.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                string UserName = HttpContext.User.Claims.Where(user => user.Type == "UserName").First().Value;
+                string UserName = HttpContext.User.Claims.Where(user => user.Type == "UserName").First().Value; // Gets Username from a claim in cookies
                 var User =  new ActiveDirectory(UserName);
                 if (User.role == "Staff") // Tests if the authenticated user is a staff member
                 {
@@ -47,6 +47,7 @@ namespace StudentLabManager.Controllers
         // GET: TestSchedule
         public async Task<IActionResult> Index()
         {
+            
             var tuple = AuthenticateUser(HttpContext);
             if (tuple != null) {
                 ViewBag.ClassList = GetStaffGroup(tuple);

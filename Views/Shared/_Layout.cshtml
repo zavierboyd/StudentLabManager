@@ -21,20 +21,20 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Class">Class</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Class" asp-action="Index">Class</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Profile">Profile</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Profile" asp-action="Index">Profile</a>
                         </li>
                         @if (User.Identity.IsAuthenticated)
                         {
                             @if (User.Claims.Where(user => user.Type == "Role").First().Value == "Staff")
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="TestSchedule">TestSchedule</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="TestSchedule" asp-action="Index">TestSchedule</a>
                                 </li>
                             }
                         }

@@ -22,7 +22,7 @@ namespace StudentLabManager
             this.role = this.GetRole();
         }
 
-        public ActiveDirectory(string UserName) //Constructor methed of the Class for identity without password
+        public ActiveDirectory(string UserName) //Constructor method of the Class for identity without password
         {
             this.username = UserName;
             PrincipalContext ser = new PrincipalContext(ContextType.Domain, "uict.nz", "DC=uict,DC=nz");  //UCOL Domain
